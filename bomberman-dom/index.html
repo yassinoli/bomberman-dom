@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./index.css" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      #root {
+        width: 100%;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+        background-color: azure;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 40px;
+      }
+      .main-container {
+        width: 1000px;
+        min-width: 1000px;
+        max-width: 1000px;
+        height: 700px;
+        min-height: 700px;
+        max-height: 700px;
+        background-color: aqua;
+      }
+      .lives-and-score-container {
+        width: 100%;
+        height: 100px;
+        background-color: blue;
+      }
+      .game-container {
+        width: 100%;
+        height: 600px;
+        background-color: aquamarine;
+      }
+      .messages-container {
+        width: 450px;
+        height: 700px;
+        background-color: aqua;
+      }
+      .border-line {
+        width: 100%;
+        height: 100%;
+        background-color: red;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .map-game {
+        width: 900px;
+        height: 500px;
+        background-color: black;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1px;
+      }
+      .cube {
+        width: 49px;
+        height: 49px;
+        background-color: green;
+      }
+    </style>
+  </head>
+  <body id="body">
+    <div id="root">
+      <div class="main-container">
+        <div class="lives-and-score-container">dd</div>
+        <div class="game-container">
+          <div class="border-line">
+            <div class="map-game" id="map-game"></div>
+          </div>
+        </div>
+      </div>
+      <div class="messages-container"></div>
+    </div>
+    <script>
+      function generateMapCubes() {
+        const container = document.getElementById("");
+        for (let i = 0; i < 180; i++) {
+          document.getElementById("map-game").innerHTML += `
+                <div class="cube"></div>
+            `;
+        }
+      }
+      generateMapCubes();
+    </script>
+    <!-- <script type="module" src="./index.mjs"></script> -->
+  </body>
+</html>
