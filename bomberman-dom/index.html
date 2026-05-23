@@ -144,6 +144,62 @@
         }
       }
       playersInitState();
+
+    //   todo 
+
+    // 1: design the game just like an aliens and space design also sounds
+
+    // 2: design the messages area with lives and score
+
+    // 3: create those function 
+    function movePlayerLeft(){}
+    function movePlayerRight(){}
+    function movePlayerUp(){}
+    function movePlayerDown(){}
+
+    // 4: generate a bomb 
+    function generateBomb(){}
+
+
+    // 5: destroy obstacles using a bomb
+    function destroyObstacle(){}
+
+    // 6: die if a you close to a bomb 
+    function calculeBombPower(){} //thats mean calculate if the bomb you generate can kill you or not 
+
+    // 7: update lives number , if you killed by a bomb or any athors reason you should change the lives number
+    function updateLives(){}
+
+    // 8: kill another player , try to bomb another player 
+    function killPlayer(playerID){}//this will need some complecated logic try to find it
+
+
+    // ######################################################start working on the web socket########################################################
+    // from here any action should be sended to all athoers players with well organizated plan (object of DOM) 
+    // how this should be happen the change that happen on your machine should be generated to athoers machine in real time that's mean 
+    // keep an eye on all changes (event listen) any kind of move or action should be passed to the broadcater 
+    // 9: extract change on my machine 
+    function extractChanges(){}
+
+    // 10: if athors players make some action and you machine receive an new state you should implement this new state 
+    function renderChages(domChanges){}
+
+
+    // from here it should works just fine , we need now messages 
+    // 11: send messags to game chat 
+    function sendMessages(){}
+    //.... 
+
+    // framwork
+    // framwork
+    // framwork
+    // framwork
+    // framwork we work by native becouse it is easy ti build with 
+    // framwork
+    // framwork
+    // framwork
+    // the last thing to do pass the whole app to AI writed by native js and html and also the framwork we workend on and ask him to swith 
+
     </script>
     <!-- <script type="module" src="./index.mjs"></script> -->
   </body>
