@@ -95,6 +95,7 @@
         184, 186, 188,
       ];
       const emptySpaces = [0, 1, 17, 18, 19, 37, 171, 189, 190, 191, 207, 208];
+      const playersInitPos = [0, 18, 190, 208];
       function generateMapCubes() {
         const container = document.getElementById("");
         for (let i = 0; i < 209; i++) {
@@ -136,6 +137,13 @@
         }
       }
       generateObstacles();
+
+      function playersInitState(playersNumber = 4) {
+        for (let i = 0; i < playersNumber; i++) {
+          document.getElementById(`cube-${playersInitPos[i]}`).innerHTML = "player";
+        }
+      }
+      playersInitState();
     </script>
     <!-- <script type="module" src="./index.mjs"></script> -->
   </body>
