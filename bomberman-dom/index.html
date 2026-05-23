@@ -100,19 +100,20 @@
         for (let i = 0; i < 209; i++) {
           if (contain(cantBeBroken, i)) {
             document.getElementById("map-game").innerHTML += `
-                  <div class="cube cant-be-broken"></div>
+                  <div id="cube-${i}" class="cube cant-be-broken"></div>
               `;
           } else if (contain(emptySpaces, i)) {
             document.getElementById("map-game").innerHTML += `
-                  <div class="cube empty-space"></div>
+                  <div id="cube-${i}" class="cube empty-space"></div>
               `;
           } else {
             document.getElementById("map-game").innerHTML += `
-                  <div class="cube"></div>
+                  <div id="cube-${i}" class="cube"></div>
               `;
           }
         }
       }
+
       generateMapCubes();
 
       function contain(a, e) {
@@ -123,6 +124,18 @@
         }
         return false;
       }
+
+      function generateObstacles() {
+        let count = 0;
+        while (count < 100) {
+          let randomNumber = Math.ceil(Math.random() * 208);
+          if (!contain(cantBeBroken, randomNumber) && !contain(emptySpaces, randomNumber)) {
+            document.getElementById(`cube-${randomNumber}`).innerHTML = "full";
+            count++;
+          }
+        }
+      }
+      generateObstacles();
     </script>
     <!-- <script type="module" src="./index.mjs"></script> -->
   </body>
