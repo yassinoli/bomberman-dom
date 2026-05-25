@@ -3,204 +3,1012 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <link rel="stylesheet" href="./index.css" />
+    <title>Cosmic Bomber — Alien Arena</title>
     <style>
+      @import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap");
+
       * {
         margin: 0;
         padding: 0;
+        box-sizing: border-box;
       }
+
+      body {
+        font-family: "Share Tech Mono", monospace;
+        background: radial-gradient(ellipse at 20% 20%, #1a0a2e 0%, #0d0221 40%, #000 100%);
+        min-height: 100vh;
+        overflow: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image:
+          radial-gradient(1px 1px at 10% 15%, #fff8, transparent), radial-gradient(1px 1px at 30% 45%, #fff6, transparent), radial-gradient(1px 1px at 55% 10%, #fff8, transparent),
+          radial-gradient(1px 1px at 70% 60%, #fff5, transparent), radial-gradient(1px 1px at 85% 25%, #fff7, transparent), radial-gradient(1px 1px at 15% 80%, #fff6, transparent),
+          radial-gradient(1px 1px at 90% 85%, #fff8, transparent);
+        pointer-events: none;
+        z-index: 0;
+      }
+
       #root {
         width: 100%;
         height: 100vh;
-        margin: 0;
-        padding: 0;
-        background-color: azure;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 40px;
+        gap: 24px;
+        padding: 16px;
+        position: relative;
+        z-index: 1;
       }
+
       .main-container {
         width: 1050px;
         min-width: 1050px;
-        max-width: 1050px;
         height: 750px;
-        min-height: 750px;
-        max-height: 750px;
-        background-color: aqua;
+        background: linear-gradient(145deg, #0f0c29 0%, #1a1040 50%, #0d0820 100%);
+        border: 2px solid #7b2ff7;
+        border-radius: 12px;
+        box-shadow:
+          0 0 30px #7b2ff744,
+          inset 0 0 60px #00000066;
+        overflow: hidden;
       }
+
       .lives-and-score-container {
         width: 100%;
         height: 100px;
-        background-color: blue;
+        background: linear-gradient(90deg, #12082a, #1e0d45, #12082a);
+        border-bottom: 1px solid #7b2ff7;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
       }
+
+      .hud-block {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .hud-label {
+        font-family: "Orbitron", sans-serif;
+        font-size: 10px;
+        letter-spacing: 3px;
+        color: #a78bfa;
+        text-transform: uppercase;
+      }
+
+      .hud-value {
+        font-family: "Orbitron", sans-serif;
+        font-size: 28px;
+        color: #00f5ff;
+        text-shadow: 0 0 12px #00f5ff88;
+      }
+
+      .hud-lives {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .life-icon {
+        font-size: 22px;
+        filter: drop-shadow(0 0 6px #ff6bcb);
+      }
+
+      .life-icon.lost {
+        opacity: 0.2;
+        filter: none;
+      }
+
+      .game-title-hud {
+        font-family: "Orbitron", sans-serif;
+        font-size: 18px;
+        color: #e879f9;
+        letter-spacing: 4px;
+        text-shadow: 0 0 20px #e879f988;
+      }
+
       .game-container {
         width: 100%;
         height: 650px;
-        background-color: aquamarine;
+        background: radial-gradient(circle at center, #0a0618 0%, #050310 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
-      .messages-container {
+
+      .side-panel {
         width: 450px;
         height: 750px;
-        background-color: aqua;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
       }
+
+      .info-panel {
+        background: linear-gradient(145deg, #0f0c29, #1a1040);
+        border: 2px solid #7b2ff7;
+        border-radius: 12px;
+        padding: 16px;
+        box-shadow: 0 0 20px #7b2ff733;
+        flex-shrink: 0;
+      }
+
+      .info-panel h2 {
+        font-family: "Orbitron", sans-serif;
+        font-size: 14px;
+        color: #e879f9;
+        letter-spacing: 2px;
+        margin-bottom: 8px;
+      }
+
+      .info-panel p {
+        font-size: 12px;
+        color: #c4b5fd;
+        line-height: 1.6;
+        margin-bottom: 8px;
+      }
+
+      .controls-list {
+        list-style: none;
+        font-size: 11px;
+        color: #a78bfa;
+        line-height: 1.8;
+      }
+
+      .controls-list kbd {
+        background: #2d1b69;
+        border: 1px solid #7b2ff7;
+        border-radius: 4px;
+        padding: 1px 6px;
+        color: #00f5ff;
+        font-family: inherit;
+      }
+
+      .messages-container {
+        flex: 1;
+        background: linear-gradient(145deg, #0f0c29, #1a1040);
+        border: 2px solid #7b2ff7;
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        box-shadow: 0 0 20px #7b2ff733;
+      }
+
+      .messages-header {
+        padding: 12px 16px;
+        border-bottom: 1px solid #7b2ff7;
+        font-family: "Orbitron", sans-serif;
+        font-size: 12px;
+        color: #e879f9;
+        letter-spacing: 2px;
+      }
+
+      .messages-list {
+        flex: 1;
+        overflow-y: auto;
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .message-item {
+        font-size: 12px;
+        color: #c4b5fd;
+        padding: 6px 10px;
+        background: #1a0a3a66;
+        border-radius: 6px;
+        border-left: 3px solid #7b2ff7;
+      }
+
+      .message-item.system {
+        border-left-color: #00f5ff;
+        color: #67e8f9;
+      }
+
+      .message-item.death {
+        border-left-color: #f43f5e;
+        color: #fda4af;
+      }
+
+      .message-input-row {
+        display: flex;
+        border-top: 1px solid #7b2ff7;
+        padding: 10px;
+        gap: 8px;
+      }
+
+      .message-input-row input {
+        flex: 1;
+        background: #0d0820;
+        border: 1px solid #7b2ff7;
+        border-radius: 6px;
+        color: #e9d5ff;
+        padding: 8px 12px;
+        font-family: inherit;
+        font-size: 12px;
+        outline: none;
+      }
+
+      .message-input-row input:focus {
+        box-shadow: 0 0 8px #7b2ff766;
+      }
+
+      .message-input-row button {
+        background: linear-gradient(135deg, #7b2ff7, #e879f9);
+        border: none;
+        border-radius: 6px;
+        color: #fff;
+        padding: 8px 14px;
+        font-family: "Orbitron", sans-serif;
+        font-size: 10px;
+        cursor: pointer;
+        letter-spacing: 1px;
+      }
+
       .border-line {
         width: 100%;
         height: 100%;
-        background-color: red;
         display: flex;
         align-items: center;
         justify-content: center;
+        padding: 20px;
       }
+
       .map-game {
         width: 950px;
         height: 550px;
-        background-color: black;
+        background: #050310;
         display: flex;
         flex-wrap: wrap;
         gap: 1px;
+        border: 3px solid #7b2ff7;
+        border-radius: 4px;
+        box-shadow:
+          0 0 40px #7b2ff722,
+          inset 0 0 30px #000;
+        box-sizing: content-box;
       }
+
       .cube {
         width: 49px;
+        min-width: 49px;
+        max-width: 49px;
         height: 49px;
-        background-color: green;
+        min-height: 49px;
+        max-height: 49px;
+        background: linear-gradient(135deg, #1e3a5f, #0f2744);
         display: flex;
         align-items: center;
         justify-content: center;
+        font-size: 20px;
+        position: relative;
+        transition: background 0.15s;
+        border: none;
       }
+
       .cant-be-broken {
-        background-color: black !important;
+        background: linear-gradient(135deg, #2d1b69, #1a0a3a) !important;
+        box-shadow: inset 0 0 8px #7b2ff744;
       }
+
       .empty-space {
-        background-color: rgb(0, 140, 255) !important;
+        background: linear-gradient(135deg, #0c2340, #061528) !important;
+      }
+
+      .obstacle {
+        background: linear-gradient(135deg, #4a3728, #2d1f14) !important;
+      }
+
+      .obstacle::after {
+        content: "🪨";
+        font-size: 18px;
+      }
+
+      .player-token {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        z-index: 2;
+        filter: drop-shadow(0 0 6px currentColor);
+        pointer-events: none;
+      }
+
+      .bomb-token {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        z-index: 3;
+        animation: bomb-pulse 0.5s ease-in-out infinite alternate;
+      }
+
+      @keyframes bomb-pulse {
+        from {
+          transform: scale(0.9);
+        }
+        to {
+          transform: scale(1.1);
+        }
+      }
+
+      .explosion-flash {
+        background: radial-gradient(circle, #ff6b00, #ff006e, #7b2ff7) !important;
+        animation: explode 0.35s ease-out forwards;
+      }
+
+      @keyframes explode {
+        0% {
+          opacity: 1;
+          transform: scale(1.2);
+        }
+        100% {
+          opacity: 0.4;
+          transform: scale(1);
+        }
+      }
+
+      .ws-status {
+        font-size: 10px;
+        color: #6b7280;
+        letter-spacing: 1px;
+      }
+
+      .ws-status.connected {
+        color: #34d399;
       }
     </style>
   </head>
   <body id="body">
     <div id="root">
       <div class="main-container">
-        <div class="lives-and-score-container">dd</div>
+        <div class="lives-and-score-container">
+          <div class="hud-block">
+            <span class="hud-label">Lives</span>
+            <div class="hud-lives" id="lives-display"></div>
+          </div>
+          <div class="game-title-hud">COSMIC BOMBER</div>
+          <div class="hud-block" style="align-items: flex-end">
+            <span class="hud-label">Score</span>
+            <span class="hud-value" id="score-display">0</span>
+          </div>
+        </div>
         <div class="game-container">
           <div class="border-line">
             <div class="map-game" id="map-game"></div>
           </div>
         </div>
       </div>
-      <div class="messages-container"></div>
+
+      <div class="side-panel">
+        <div class="info-panel">
+          <h2>Cosmic Bomber</h2>
+          <p>Battle aliens across a deep-space arena. Plant plasma bombs to blast asteroid obstacles and rival explorers. Last pilot standing wins the sector.</p>
+          <ul class="controls-list">
+            <li><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> — Move one cell</li>
+            <li><kbd>Space</kbd> — Drop plasma bomb</li>
+            <li>Bombs detonate after 2 seconds</li>
+            <li>Blast radius: cross pattern, 2 cells</li>
+          </ul>
+          <p class="ws-status" id="ws-status">◌ Offline — local mode</p>
+        </div>
+
+        <div class="messages-container">
+          <div class="messages-header">Transmission Log</div>
+          <div class="messages-list" id="messages-list"></div>
+          <div class="message-input-row">
+            <input type="text" id="chat-input" placeholder="Send transmission..." maxlength="120" />
+            <button type="button" id="chat-send">SEND</button>
+          </div>
+        </div>
+      </div>
     </div>
+
     <script>
+      const GRID_COLS = 19;
+      const GRID_ROWS = 11;
+      const GRID_SIZE = GRID_COLS * GRID_ROWS;
+      const BOMB_DELAY_MS = 2000;
+      const BLAST_RADIUS = 2;
+      const MAX_LIVES = 3;
+      const LOCAL_PLAYER_ID = 0;
+
+      const PLAYER_COLORS = ["#00f5ff", "#ff6bcb", "#fbbf24", "#34d399"];
+      const PLAYER_EMOJIS = ["👽", "🛸", "🤖", "👾"];
+
       const cantBeBroken = [
         20, 22, 24, 26, 28, 30, 32, 34, 36, 58, 60, 62, 64, 66, 68, 70, 72, 74, 96, 98, 100, 102, 104, 106, 108, 110, 112, 134, 136, 138, 140, 142, 144, 146, 148, 150, 172, 174, 176, 178, 180, 182,
         184, 186, 188,
       ];
       const emptySpaces = [0, 1, 17, 18, 19, 37, 171, 189, 190, 191, 207, 208];
       const playersInitPos = [0, 18, 190, 208];
-      function generateMapCubes() {
-        const container = document.getElementById("");
-        for (let i = 0; i < 209; i++) {
-          if (contain(cantBeBroken, i)) {
-            document.getElementById("map-game").innerHTML += `
-                  <div id="cube-${i}" class="cube cant-be-broken"></div>
-              `;
-          } else if (contain(emptySpaces, i)) {
-            document.getElementById("map-game").innerHTML += `
-                  <div id="cube-${i}" class="cube empty-space"></div>
-              `;
-          } else {
-            document.getElementById("map-game").innerHTML += `
-                  <div id="cube-${i}" class="cube"></div>
-              `;
-          }
-        }
-      }
 
-      generateMapCubes();
+      let gameState = {
+        players: [],
+        obstacles: new Set(),
+        bombs: [],
+        score: 0,
+        messages: [],
+      };
+
+      let lastSyncedState = null;
+      let ws = null;
+      let respawnTimers = {};
 
       function contain(a, e) {
-        for (let i = 0; i < a.length; i++) {
-          if (a[i] == e) {
-            return true;
-          }
+        return a.includes(e);
+      }
+
+      function generateMapCubes() {
+        const map = document.getElementById("map-game");
+        map.innerHTML = "";
+        for (let i = 0; i < GRID_SIZE; i++) {
+          let cls = "cube";
+          if (contain(cantBeBroken, i)) cls += " cant-be-broken";
+          else if (contain(emptySpaces, i)) cls += " empty-space";
+          map.innerHTML += `<div id="cube-${i}" class="${cls}" data-index="${i}"></div>`;
         }
-        return false;
       }
 
       function generateObstacles() {
         let count = 0;
         while (count < 100) {
-          let randomNumber = Math.ceil(Math.random() * 208);
-          if (!contain(cantBeBroken, randomNumber) && !contain(emptySpaces, randomNumber)) {
-            document.getElementById(`cube-${randomNumber}`).innerHTML = "full";
-            count++;
+          const randomNumber = Math.floor(Math.random() * GRID_SIZE);
+          if (!contain(cantBeBroken, randomNumber) && !contain(emptySpaces, randomNumber) && !contain(playersInitPos, randomNumber)) {
+            if (!gameState.obstacles.has(randomNumber)) {
+              gameState.obstacles.add(randomNumber);
+              const cube = document.getElementById(`cube-${randomNumber}`);
+              cube.classList.add("obstacle");
+              count++;
+            }
           }
         }
       }
-      generateObstacles();
 
-      function playersInitState(playersNumber = 4) {
+      function initPlayers(playersNumber = 4) {
+        gameState.players = [];
         for (let i = 0; i < playersNumber; i++) {
-          document.getElementById(`cube-${playersInitPos[i]}`).innerHTML = "player";
+          gameState.players.push({
+            id: i,
+            pos: playersInitPos[i],
+            lives: MAX_LIVES,
+            alive: true,
+            color: PLAYER_COLORS[i],
+            emoji: PLAYER_EMOJIS[i],
+          });
+        }
+        renderAllPlayers();
+      }
+
+      function renderPlayerOnCube(player) {
+        if (!player.alive) return;
+        const cube = document.getElementById(`cube-${player.pos}`);
+        if (!cube) return;
+        const existing = cube.querySelector(`.player-token[data-player="${player.id}"]`);
+        if (existing) existing.remove();
+        const token = document.createElement("div");
+        token.className = "player-token";
+        token.dataset.player = player.id;
+        token.style.color = player.color;
+        token.textContent = player.emoji;
+        token.title = `Player ${player.id + 1}`;
+        cube.appendChild(token);
+      }
+
+      function renderAllPlayers() {
+        document.querySelectorAll(".player-token").forEach((el) => el.remove());
+        gameState.players.forEach(renderPlayerOnCube);
+      }
+
+      function getLocalPlayer() {
+        return gameState.players[LOCAL_PLAYER_ID];
+      }
+
+      function isWall(index) {
+        return contain(cantBeBroken, index);
+      }
+
+      function isObstacle(index) {
+        return gameState.obstacles.has(index);
+      }
+
+      function hasBombAt(index) {
+        return gameState.bombs.some((b) => b.pos === index && !b.exploded);
+      }
+
+      function getPlayerAt(index, excludeId = -1) {
+        return gameState.players.find((p) => p.alive && p.pos === index && p.id !== excludeId);
+      }
+
+      function canMoveTo(index) {
+        if (index < 0 || index >= GRID_SIZE) return false;
+        if (isWall(index)) return false;
+        if (isObstacle(index)) return false;
+        if (hasBombAt(index)) return false;
+        if (getPlayerAt(index)) return false;
+        return true;
+      }
+
+      function movePlayer(playerId, newPos) {
+        const player = gameState.players[playerId];
+        if (!player || !player.alive) return false;
+        if (!canMoveTo(newPos)) return false;
+
+        const oldPos = player.pos;
+        player.pos = newPos;
+        renderAllPlayers();
+        broadcastChange({ type: "move", playerId, from: oldPos, to: newPos });
+        return true;
+      }
+
+      function movePlayerLeft() {
+        const p = getLocalPlayer();
+        if (!p || !p.alive) return;
+        if (p.pos % GRID_COLS === 0) return;
+        movePlayer(LOCAL_PLAYER_ID, p.pos - 1);
+      }
+
+      function movePlayerRight() {
+        const p = getLocalPlayer();
+        if (!p || !p.alive) return;
+        if (p.pos % GRID_COLS === GRID_COLS - 1) return;
+        movePlayer(LOCAL_PLAYER_ID, p.pos + 1);
+      }
+
+      function movePlayerUp() {
+        const p = getLocalPlayer();
+        if (!p || !p.alive) return;
+        if (p.pos < GRID_COLS) return;
+        movePlayer(LOCAL_PLAYER_ID, p.pos - GRID_COLS);
+      }
+
+      function movePlayerDown() {
+        const p = getLocalPlayer();
+        if (!p || !p.alive) return;
+        if (p.pos >= GRID_SIZE - GRID_COLS) return;
+        movePlayer(LOCAL_PLAYER_ID, p.pos + GRID_COLS);
+      }
+
+      function getBlastCells(centerPos, radius = BLAST_RADIUS) {
+        const cells = new Set([centerPos]);
+        const directions = [
+          { delta: -1, test: (pos) => pos % GRID_COLS !== 0 },
+          { delta: 1, test: (pos) => pos % GRID_COLS !== GRID_COLS - 1 },
+          { delta: -GRID_COLS, test: (pos) => pos >= GRID_COLS },
+          { delta: GRID_COLS, test: (pos) => pos < GRID_SIZE - GRID_COLS },
+        ];
+
+        for (const { delta, test } of directions) {
+          let pos = centerPos;
+          for (let r = 0; r < radius; r++) {
+            const next = pos + delta;
+            if (next < 0 || next >= GRID_SIZE || !test(pos)) break;
+            if (isWall(next)) break;
+            cells.add(next);
+            pos = next;
+            if (isObstacle(next)) break;
+          }
+        }
+        return [...cells];
+      }
+
+      function calculeBombPower(bombPos, radius = BLAST_RADIUS) {
+        return getBlastCells(bombPos, radius);
+      }
+
+      function destroyObstacle(index) {
+        if (!gameState.obstacles.has(index)) return;
+        gameState.obstacles.delete(index);
+        const cube = document.getElementById(`cube-${index}`);
+        if (cube) {
+          cube.classList.remove("obstacle");
+        }
+        broadcastChange({ type: "destroyObstacle", index });
+      }
+
+      function flashExplosion(cells) {
+        cells.forEach((idx) => {
+          const cube = document.getElementById(`cube-${idx}`);
+          if (cube) {
+            cube.classList.add("explosion-flash");
+            setTimeout(() => cube.classList.remove("explosion-flash"), 400);
+          }
+        });
+      }
+
+      function killPlayer(playerID, reason = "bomb") {
+        const player = gameState.players[playerID];
+        if (!player || !player.alive) return;
+
+        player.alive = false;
+        player.lives -= 1;
+        updateLives();
+
+        const cube = document.getElementById(`cube-${player.pos}`);
+        const token = cube?.querySelector(`.player-token[data-player="${playerID}"]`);
+        if (token) token.remove();
+
+        addSystemMessage(`Player ${playerID + 1} ${PLAYER_EMOJIS[playerID]} eliminated by ${reason}!`, "death");
+
+        if (playerID === LOCAL_PLAYER_ID) {
+          gameState.score = Math.max(0, gameState.score - 50);
+          updateScoreDisplay();
+        } else if (playerID !== LOCAL_PLAYER_ID) {
+          gameState.score += 100;
+          updateScoreDisplay();
+        }
+
+        broadcastChange({ type: "kill", playerId: playerID, lives: player.lives, reason });
+
+        if (player.lives > 0) {
+          scheduleRespawn(playerID);
+        } else {
+          addSystemMessage(`Player ${playerID + 1} has no lives remaining.`, "death");
         }
       }
-      playersInitState();
 
-    //   todo 
+      function scheduleRespawn(playerId) {
+        if (respawnTimers[playerId]) clearTimeout(respawnTimers[playerId]);
+        respawnTimers[playerId] = setTimeout(() => {
+          const player = gameState.players[playerId];
+          const spawnPos = playersInitPos[playerId];
+          if (!getPlayerAt(spawnPos) && canMoveTo(spawnPos)) {
+            player.pos = spawnPos;
+            player.alive = true;
+            renderPlayerOnCube(player);
+            addSystemMessage(`Player ${playerId + 1} respawned at base.`);
+            broadcastChange({ type: "respawn", playerId, pos: spawnPos });
+          }
+        }, 3000);
+      }
 
-    // 1: design the game just like an aliens and space design also sounds
+      function explodeBomb(bombId) {
+        const bomb = gameState.bombs.find((b) => b.id === bombId);
+        if (!bomb || bomb.exploded) return;
+        bomb.exploded = true;
 
-    // 2: design the messages area with lives and score
+        const cube = document.getElementById(`cube-${bomb.pos}`);
+        const bombEl = cube?.querySelector(".bomb-token");
+        if (bombEl) bombEl.remove();
 
-    // 3: create those function 
-    function movePlayerLeft(){}
-    function movePlayerRight(){}
-    function movePlayerUp(){}
-    function movePlayerDown(){}
+        const blastCells = calculeBombPower(bomb.pos);
+        flashExplosion(blastCells);
 
-    // 4: generate a bomb 
-    function generateBomb(){}
+        blastCells.forEach((cell) => {
+          destroyObstacle(cell);
+          const victim = getPlayerAt(cell);
+          if (victim) {
+            const reason = victim.id === bomb.ownerId ? "own bomb" : "plasma blast";
+            killPlayer(victim.id, reason);
+          }
+        });
 
+        broadcastChange({ type: "explode", bombId, pos: bomb.pos, blastCells });
+        gameState.bombs = gameState.bombs.filter((b) => b.id !== bombId);
+      }
 
-    // 5: destroy obstacles using a bomb
-    function destroyObstacle(){}
+      let bombCounter = 0;
 
-    // 6: die if a you close to a bomb 
-    function calculeBombPower(){} //thats mean calculate if the bomb you generate can kill you or not 
+      function generateBomb() {
+        const player = getLocalPlayer();
+        if (!player || !player.alive) return;
+        if (hasBombAt(player.pos)) return;
 
-    // 7: update lives number , if you killed by a bomb or any athors reason you should change the lives number
-    function updateLives(){}
+        const bombId = `bomb-${++bombCounter}`;
+        const bomb = { id: bombId, pos: player.pos, ownerId: LOCAL_PLAYER_ID, exploded: false };
+        gameState.bombs.push(bomb);
 
-    // 8: kill another player , try to bomb another player 
-    function killPlayer(playerID){}//this will need some complecated logic try to find it
+        const cube = document.getElementById(`cube-${player.pos}`);
+        const bombEl = document.createElement("div");
+        bombEl.className = "bomb-token";
+        bombEl.dataset.bombId = bombId;
+        bombEl.textContent = "💣";
+        cube.appendChild(bombEl);
 
+        addSystemMessage(`Plasma bomb armed at sector ${player.pos}.`);
+        broadcastChange({ type: "bomb", bombId, pos: player.pos, ownerId: LOCAL_PLAYER_ID });
 
-    // ######################################################start working on the web socket########################################################
-    // from here any action should be sended to all athoers players with well organizated plan (object of DOM) 
-    // how this should be happen the change that happen on your machine should be generated to athoers machine in real time that's mean 
-    // keep an eye on all changes (event listen) any kind of move or action should be passed to the broadcater 
-    // 9: extract change on my machine 
-    function extractChanges(){}
+        setTimeout(() => explodeBomb(bombId), BOMB_DELAY_MS);
+      }
 
-    // 10: if athors players make some action and you machine receive an new state you should implement this new state 
-    function renderChages(domChanges){}
+      function updateLives() {
+        const display = document.getElementById("lives-display");
+        const player = getLocalPlayer();
+        display.innerHTML = "";
+        for (let i = 0; i < MAX_LIVES; i++) {
+          const span = document.createElement("span");
+          span.className = "life-icon" + (i >= player.lives ? " lost" : "");
+          span.textContent = "💜";
+          display.appendChild(span);
+        }
+        broadcastChange({ type: "lives", playerId: LOCAL_PLAYER_ID, lives: player.lives });
+      }
 
+      function updateScoreDisplay() {
+        document.getElementById("score-display").textContent = gameState.score;
+      }
 
-    // from here it should works just fine , we need now messages 
-    // 11: send messags to game chat 
-    function sendMessages(){}
-    //.... 
+      function addSystemMessage(text, className = "system") {
+        const list = document.getElementById("messages-list");
+        const item = document.createElement("div");
+        item.className = `message-item ${className}`;
+        const time = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+        item.textContent = `[${time}] ${text}`;
+        list.appendChild(item);
+        list.scrollTop = list.scrollHeight;
+        gameState.messages.push({ text, className, time });
+      }
 
-    // framwork
-    // framwork
-    // framwork
-    // framwork
-    // framwork we work by native becouse it is easy ti build with 
-    // framwork
-    // framwork
-    // framwork
-    // the last thing to do pass the whole app to AI writed by native js and html and also the framwork we workend on and ask him to swith 
+      function sendMessages(text) {
+        const msg = (text || "").trim();
+        if (!msg) return;
+        addSystemMessage(`You: ${msg}`);
+        broadcastChange({ type: "chat", playerId: LOCAL_PLAYER_ID, text: msg, sender: "You" });
+        document.getElementById("chat-input").value = "";
+      }
 
+      function extractChanges() {
+        const snapshot = {
+          players: gameState.players.map((p) => ({
+            id: p.id,
+            pos: p.pos,
+            lives: p.lives,
+            alive: p.alive,
+          })),
+          obstacles: [...gameState.obstacles],
+          bombs: gameState.bombs.map((b) => ({ id: b.id, pos: b.pos, ownerId: b.ownerId, exploded: b.exploded })),
+          score: gameState.score,
+        };
+
+        if (!lastSyncedState) {
+          lastSyncedState = JSON.parse(JSON.stringify(snapshot));
+          return { type: "full", state: snapshot };
+        }
+
+        const diff = { type: "diff", changes: [] };
+
+        snapshot.players.forEach((p, i) => {
+          const prev = lastSyncedState.players[i];
+          if (prev.pos !== p.pos) diff.changes.push({ type: "move", playerId: p.id, from: prev.pos, to: p.pos });
+          if (prev.lives !== p.lives) diff.changes.push({ type: "lives", playerId: p.id, lives: p.lives });
+          if (prev.alive !== p.alive) diff.changes.push({ type: "alive", playerId: p.id, alive: p.alive, pos: p.pos });
+        });
+
+        const prevObs = new Set(lastSyncedState.obstacles);
+        snapshot.obstacles.forEach((idx) => {
+          if (!prevObs.has(idx)) diff.changes.push({ type: "destroyObstacle", index: idx });
+        });
+
+        lastSyncedState = JSON.parse(JSON.stringify(snapshot));
+        return diff.changes.length ? diff : null;
+      }
+
+      function renderChages(domChanges) {
+        if (!domChanges) return;
+
+        if (domChanges.type === "full") {
+          applyFullState(domChanges.state);
+          return;
+        }
+
+        if (domChanges.type === "diff" && domChanges.changes) {
+          domChanges.changes.forEach(applySingleChange);
+          return;
+        }
+
+        applySingleChange(domChanges);
+      }
+
+      function applySingleChange(change) {
+        switch (change.type) {
+          case "move": {
+            const player = gameState.players[change.playerId];
+            if (player) {
+              player.pos = change.to;
+              renderAllPlayers();
+            }
+            break;
+          }
+          case "bomb": {
+            if (!gameState.bombs.find((b) => b.id === change.bombId)) {
+              gameState.bombs.push({ id: change.bombId, pos: change.pos, ownerId: change.ownerId, exploded: false });
+              const cube = document.getElementById(`cube-${change.pos}`);
+              if (cube && !cube.querySelector(`[data-bomb-id="${change.bombId}"]`)) {
+                const bombEl = document.createElement("div");
+                bombEl.className = "bomb-token";
+                bombEl.dataset.bombId = change.bombId;
+                bombEl.textContent = "💣";
+                cube.appendChild(bombEl);
+              }
+              if (change.ownerId !== LOCAL_PLAYER_ID) {
+                setTimeout(() => explodeBomb(change.bombId), BOMB_DELAY_MS);
+              }
+            }
+            break;
+          }
+          case "explode": {
+            flashExplosion(change.blastCells || []);
+            (change.blastCells || []).forEach((cell) => {
+              destroyObstacle(cell);
+              const victim = gameState.players.find((p) => p.alive && p.pos === cell);
+              if (victim && change.ownerId !== victim.id) {
+                /* kill handled by kill event */
+              }
+            });
+            gameState.bombs = gameState.bombs.filter((b) => b.id !== change.bombId);
+            break;
+          }
+          case "destroyObstacle":
+            destroyObstacle(change.index);
+            break;
+          case "kill": {
+            const player = gameState.players[change.playerId];
+            if (player) {
+              player.alive = false;
+              player.lives = change.lives;
+              const cube = document.getElementById(`cube-${player.pos}`);
+              cube?.querySelector(`.player-token[data-player="${change.playerId}"]`)?.remove();
+              if (change.playerId === LOCAL_PLAYER_ID) updateLives();
+              addSystemMessage(`Player ${change.playerId + 1} hit! (${change.lives} lives left)`, "death");
+              if (player.lives > 0 && change.playerId !== LOCAL_PLAYER_ID) scheduleRespawn(change.playerId);
+            }
+            break;
+          }
+          case "respawn": {
+            const player = gameState.players[change.playerId];
+            if (player) {
+              player.pos = change.pos;
+              player.alive = true;
+              renderPlayerOnCube(player);
+            }
+            break;
+          }
+          case "lives": {
+            const player = gameState.players[change.playerId];
+            if (player) {
+              player.lives = change.lives;
+              if (change.playerId === LOCAL_PLAYER_ID) updateLives();
+            }
+            break;
+          }
+          case "chat":
+            if (change.sender !== "You") {
+              addSystemMessage(`Player ${change.playerId + 1}: ${change.text}`);
+            }
+            break;
+          case "score":
+            if (change.playerId === LOCAL_PLAYER_ID) {
+              gameState.score = change.score;
+              updateScoreDisplay();
+            }
+            break;
+        }
+      }
+
+      function applyFullState(state) {
+        state.players.forEach((sp) => {
+          const player = gameState.players[sp.id];
+          if (player) {
+            player.pos = sp.pos;
+            player.lives = sp.lives;
+            player.alive = sp.alive;
+          }
+        });
+        gameState.obstacles = new Set(state.obstacles);
+        document.querySelectorAll(".cube.obstacle").forEach((c) => c.classList.remove("obstacle"));
+        state.obstacles.forEach((idx) => {
+          const cube = document.getElementById(`cube-${idx}`);
+          if (cube) cube.classList.add("obstacle");
+        });
+        renderAllPlayers();
+        updateLives();
+        updateScoreDisplay();
+      }
+
+      function broadcastChange(change) {
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          ws.send(JSON.stringify(change));
+        }
+        const extracted = extractChanges();
+        if (extracted && extracted.type === "diff" && ws && ws.readyState === WebSocket.OPEN) {
+          ws.send(JSON.stringify(extracted));
+        }
+      }
+
+      function initWebSocket() {
+        const WS_URL = "ws://localhost:8765";
+        try {
+          ws = new WebSocket(WS_URL);
+          ws.onopen = () => {
+            document.getElementById("ws-status").textContent = "● Connected — multiplayer active";
+            document.getElementById("ws-status").classList.add("connected");
+            addSystemMessage("Connected to galactic relay.");
+            ws.send(JSON.stringify({ type: "join", playerId: LOCAL_PLAYER_ID }));
+            ws.send(JSON.stringify(extractChanges()));
+          };
+          ws.onmessage = (event) => {
+            try {
+              const data = JSON.parse(event.data);
+              if (data.playerId === LOCAL_PLAYER_ID && data.type === "chat") return;
+              renderChages(data);
+            } catch (e) {
+              console.warn("Invalid WS message", e);
+            }
+          };
+          ws.onclose = () => {
+            document.getElementById("ws-status").textContent = "◌ Offline — local mode";
+            document.getElementById("ws-status").classList.remove("connected");
+          };
+          ws.onerror = () => {
+            ws = null;
+          };
+        } catch (e) {
+          ws = null;
+        }
+      }
+
+      function setupControls() {
+        document.addEventListener("keydown", (e) => {
+          if (document.activeElement === document.getElementById("chat-input")) return;
+          switch (e.key) {
+            case "ArrowLeft":
+              e.preventDefault();
+              movePlayerLeft();
+              break;
+            case "ArrowRight":
+              e.preventDefault();
+              movePlayerRight();
+              break;
+            case "ArrowUp":
+              e.preventDefault();
+              movePlayerUp();
+              break;
+            case "ArrowDown":
+              e.preventDefault();
+              movePlayerDown();
+              break;
+            case " ":
+              e.preventDefault();
+              generateBomb();
+              break;
+          }
+        });
+
+        document.getElementById("chat-send").addEventListener("click", () => {
+          sendMessages(document.getElementById("chat-input").value);
+        });
+
+        document.getElementById("chat-input").addEventListener("keydown", (e) => {
+          if (e.key === "Enter") sendMessages(e.target.value);
+        });
+      }
+
+      function initGame() {
+        generateMapCubes();
+        generateObstacles();
+        initPlayers();
+        updateLives();
+        updateScoreDisplay();
+        addSystemMessage("Cosmic Bomber online. Good luck, pilot!");
+        setupControls();
+        initWebSocket();
+        lastSyncedState = null;
+        extractChanges();
+      }
+
+      initGame();
     </script>
-    <!-- <script type="module" src="./index.mjs"></script> -->
   </body>
 </html>
