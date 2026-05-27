@@ -44,6 +44,7 @@ const frameworkRoot = resolve(projectRoot, "fw");
 
 let rooms = [createRoom(0)];
 
+// Handles HTTP requests for static files and local room resets.
 const server = createServer(async (req, res) => {
   try {
     if (req.url === "/reset") {
@@ -62,7 +63,9 @@ const server = createServer(async (req, res) => {
 
 const wss = new WebSocketServer({ server });
 
+// Handles a connected websocket client and routes incoming game messages.
 wss.on("connection", (ws) => {
+  // Parses and dispatches one websocket message from the client.
   ws.on("message", (raw) => {
     let message;
     try {
@@ -77,13 +80,18 @@ wss.on("connection", (ws) => {
     if (message.type === "bomb") placeBomb(ws);
   });
 
+  // Cleans up room state when the websocket closes.
   ws.on("close", () => disconnectPlayer(ws));
 });
 
+// Starts the HTTP and websocket server.
 server.listen(port, hostname, () => {
   console.log(`Bomberman DOM running at http://${hostname}:${port}/`);
 });
 
+/**
+ * Serves frontend and framework files from the allowed project directories.
+ */
 async function serveStatic(req, res) {
   const url = new URL(req.url || "/", `http://${hostname}:${port}`);
   const pathname = decodeURIComponent(url.pathname);
@@ -109,6 +117,9 @@ async function serveStatic(req, res) {
   }
 }
 
+/**
+ * Creates a fresh game room with an initialized map and empty game state.
+ */
 function createRoom(id) {
   const level = new Level(mapString);
   return {
@@ -129,6 +140,9 @@ function createRoom(id) {
   };
 }
 
+/**
+ * Closes active player connections and restores the room list to one lobby.
+ */
 function resetRooms() {
   for (const room of rooms) {
     clearTimeout(room.joinTimer);
@@ -138,6 +152,9 @@ function resetRooms() {
   rooms = [createRoom(0)];
 }
 
+/**
+ * Finds an available lobby room or creates a new one.
+ */
 function openRoom() {
   let room = rooms.find((candidate) => candidate.phase === "lobby" && candidate.players.length < MAX_PLAYERS);
   if (!room) {
@@ -147,6 +164,9 @@ function openRoom() {
   return room;
 }
 
+/**
+ * Validates a nickname, adds the websocket as a player, and updates lobby state.
+ */
 function joinRoom(ws, nickname) {
   if (ws.player) return;
   const name = String(nickname || "").trim().slice(0, 16);
@@ -179,6 +199,7 @@ function joinRoom(ws, nickname) {
 
   if (room.players.length >= MIN_PLAYERS && !room.joinTimer && !room.readyTimer) {
     room.countdownEndsAt = Date.now() + JOIN_WINDOW_MS;
+    // Advances the lobby to the ready countdown after the join window expires.
     room.joinTimer = setTimeout(() => startReadyCountdown(room), JOIN_WINDOW_MS);
   }
   if (room.players.length === MAX_PLAYERS) startReadyCountdown(room);
@@ -186,6 +207,9 @@ function joinRoom(ws, nickname) {
   broadcastState(room);
 }
 
+/**
+ * Moves a lobby room into the ready countdown phase.
+ */
 function startReadyCountdown(room) {
   if (room.phase !== "lobby" || room.readyTimer) return;
   clearTimeout(room.joinTimer);
@@ -193,9 +217,13 @@ function startReadyCountdown(room) {
   room.phase = "countdown";
   room.countdownEndsAt = Date.now() + READY_WINDOW_MS;
   broadcastState(room);
+  // Starts the game when the ready countdown expires.
   room.readyTimer = setTimeout(() => startGame(room), READY_WINDOW_MS);
 }
 
+/**
+ * Starts the match and places each player on a free spawn tile.
+ */
 function startGame(room) {
   clearTimeout(room.readyTimer);
   room.readyTimer = null;
@@ -209,6 +237,9 @@ function startGame(room) {
   broadcastState(room);
 }
 
+/**
+ * Sanitizes and broadcasts a chat message from a connected player.
+ */
 function handleChat(ws, text) {
   const room = roomFor(ws);
   if (!room) return;
@@ -219,6 +250,9 @@ function handleChat(ws, text) {
   broadcastChat(room, player.nickname, cleanText, "chat");
 }
 
+/**
+ * Applies a movement request for a live player if the target tile is valid.
+ */
 function handleMove(ws, direction) {
   const room = roomFor(ws);
   const player = room && playerFor(room, ws);
@@ -240,6 +274,9 @@ function handleMove(ws, direction) {
   broadcastState(room);
 }
 
+/**
+ * Checks whether a player can enter a map tile.
+ */
 function canEnter(room, x, y, movingPlayer = null) {
   if (x < 0 || y < 0 || x >= room.width || y >= room.height) return false;
   if (room.map[y][x] !== "empty") return false;
@@ -249,6 +286,9 @@ function canEnter(room, x, y, movingPlayer = null) {
   return true;
 }
 
+/**
+ * Places a bomb for the websocket's player when they have one available.
+ */
 function placeBomb(ws) {
   const room = roomFor(ws);
   const player = room && playerFor(room, ws);
@@ -266,9 +306,13 @@ function placeBomb(ws) {
   room.bombs.push(bomb);
   broadcastState(room);
 
+  // Detonates the bomb after its fuse expires.
   setTimeout(() => explodeBomb(room, bomb), BOMB_TIME_MS);
 }
 
+/**
+ * Resolves bomb detonation, damage, block destruction, and explosion cleanup.
+ */
 function explodeBomb(room, bomb) {
   if (room.phase !== "playing") return;
   const bombIndex = room.bombs.findIndex((candidate) => candidate.id === bomb.id);
@@ -296,12 +340,16 @@ function explodeBomb(room, bomb) {
 
   checkWinner(room);
   broadcastState(room);
+  // Removes temporary explosion cells after the animation window.
   setTimeout(() => {
     room.explosions = room.explosions.filter((item) => item.id !== explosion.id);
     broadcastState(room);
   }, EXPLOSION_TIME_MS);
 }
 
+/**
+ * Calculates all map cells reached by a bomb explosion.
+ */
 function affectedCells(room, bomb) {
   const origin = fromIndex(room, bomb.pos);
   const cells = [bomb.pos];
@@ -319,12 +367,16 @@ function affectedCells(room, bomb) {
   return cells;
 }
 
+/**
+ * Removes a life from a player and schedules respawn when lives remain.
+ */
 function damagePlayer(room, player) {
   player.lives -= 1;
   player.alive = false;
   broadcastChat(room, "Server", player.lives > 0 ? `${player.nickname} lost a life.` : `${player.nickname} is out.`, "death");
   if (player.lives <= 0) return;
 
+  // Respawns the player after the respawn delay if the match is still active.
   setTimeout(() => {
     if (room.phase !== "playing" || player.lives <= 0) return;
     player.pos = findFreeTile(room, player.spawn, player);
@@ -333,6 +385,9 @@ function damagePlayer(room, player) {
   }, RESPAWN_TIME_MS);
 }
 
+/**
+ * Ends the match when only one connected player still has lives.
+ */
 function checkWinner(room) {
   const alivePlayers = room.players.filter((player) => player.connected && player.lives > 0);
   if (room.phase === "playing" && alivePlayers.length === 1) {
@@ -343,6 +398,9 @@ function checkWinner(room) {
   }
 }
 
+/**
+ * Finds the nearest enterable tile to a preferred spawn position.
+ */
 function findFreeTile(room, preferredPos, player) {
   const preferred = fromIndex(room, preferredPos);
   if (canEnter(room, preferred.x, preferred.y, player)) return preferredPos;
@@ -368,12 +426,18 @@ function findFreeTile(room, preferredPos, player) {
   return preferredPos;
 }
 
+/**
+ * Randomly spawns a power-up on a cleared block tile.
+ */
 function maybeSpawnPowerup(room, pos) {
   if (Math.random() > 0.35 || room.powerups.some((powerup) => powerup.pos === pos)) return;
   const kind = POWER_UPS[Math.floor(Math.random() * POWER_UPS.length)];
   room.powerups.push({ pos, kind });
 }
 
+/**
+ * Gives a player the power-up on their current tile and removes it from the room.
+ */
 function collectPowerup(room, player) {
   const index = room.powerups.findIndex((powerup) => powerup.pos === player.pos);
   if (index === -1) return;
@@ -384,6 +448,9 @@ function collectPowerup(room, player) {
   broadcastChat(room, "Server", `${player.nickname} picked up ${powerup.kind}.`, "system");
 }
 
+/**
+ * Marks a websocket's player as disconnected and updates room membership.
+ */
 function disconnectPlayer(ws) {
   const room = roomFor(ws);
   const player = room && playerFor(room, ws);
@@ -413,16 +480,25 @@ function disconnectPlayer(ws) {
   broadcastState(room);
 }
 
+/**
+ * Sends a chat-style message to every player in the room.
+ */
 function broadcastChat(room, sender, text, className) {
   const message = { type: "chat", sender, text, className, time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) };
   for (const player of room.players) send(player.conn, message);
 }
 
+/**
+ * Sends the public game state to every player in the room.
+ */
 function broadcastState(room) {
   const payload = { type: "state", state: publicState(room) };
   for (const player of room.players) send(player.conn, payload);
 }
 
+/**
+ * Builds the client-safe state payload for a room.
+ */
 function publicState(room) {
   return {
     phase: room.phase,
@@ -452,6 +528,9 @@ function publicState(room) {
   };
 }
 
+/**
+ * Lists all map cell indexes matching a tile type.
+ */
 function cellsOf(room, type) {
   const cells = [];
   for (let y = 0; y < room.height; y += 1) {
@@ -462,23 +541,38 @@ function cellsOf(room, type) {
   return cells;
 }
 
+/**
+ * Finds the room associated with a websocket.
+ */
 function roomFor(ws) {
   if (!ws.player) return null;
   return rooms.find((room) => room.id === ws.player.roomId) || null;
 }
 
+/**
+ * Finds the player associated with a websocket inside a room.
+ */
 function playerFor(room, ws) {
   return room.players.find((player) => player.conn === ws) || null;
 }
 
+/**
+ * Sends a JSON message when the websocket connection is open.
+ */
 function send(ws, message) {
   if (ws.readyState === 1) ws.send(JSON.stringify(message));
 }
 
+/**
+ * Converts x/y coordinates into a one-dimensional map index.
+ */
 function toIndex(room, pos) {
   return pos.y * room.width + pos.x;
 }
 
+/**
+ * Converts a one-dimensional map index into x/y coordinates.
+ */
 function fromIndex(room, pos) {
   return { x: pos % room.width, y: Math.floor(pos / room.width) };
 }

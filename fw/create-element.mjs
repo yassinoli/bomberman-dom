@@ -16,6 +16,7 @@ export default function createElement(tagName, attributes = {}, events = {}, ...
     events,
 
     children: children.flat().map((child) => {
+      // Normalizes primitive children into text virtual nodes.
       if (typeof child === "string" || typeof child === "number") {
         return {
           tagName: "text",

@@ -17,18 +17,24 @@ const list = createState({
 
 const data = createState({ count: list.getState().list.filter((item) => item.listType == "active").length });
 
+// Re-renders the app when the active count changes.
 data.subscribe(() => {
   patchDOM(router);
 });
 
+// Re-renders the app when the todo list changes.
 list.subscribe(() => {
   patchDOM(router);
 });
 
+// Re-renders the app when the selected filter changes.
 listType.subscribe(() => {
   patchDOM(router);
 });
 
+/**
+ * Builds the main todo application view for the active route.
+ */
 function Home() {
   let toggleAll = {};
   if (list.getState().list.length != 0) {
@@ -40,6 +46,7 @@ function Home() {
         "input",
         { class: "toggle-all", type: "check-box", id: "toggle-all", "data-testid": "toggle-all" },
         {
+          // Toggles all todo items when the master checkbox is clicked.
           click: () => {
             markAllItemsAsCompleted();
           },
@@ -63,6 +70,7 @@ function Home() {
           "input",
           { class: "new-todo", id: "todo-input", type: "text", "data-testid": "text-input", placeholder: "What needs to be done?", value: "" },
           {
+            // Adds a todo item when Enter is pressed with valid text.
             keydown: (event) => {
               const value = event.target.value.trim();
               if (event.key === "Enter" && value.length >= 2) {
@@ -81,6 +89,9 @@ function Home() {
   ];
 }
 
+/**
+ * Builds the informational footer displayed below the app.
+ */
 function Footer() {
   return [
     createElement(
@@ -94,10 +105,16 @@ function Footer() {
   ];
 }
 
+/**
+ * Generates a unique id for a newly created todo item.
+ */
 function generateUniqueId() {
   return `id-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
 }
 
+/**
+ * Adds a new active todo item and refreshes the active count.
+ */
 function addItem(newItemVal) {
   list.setState({
     list: [
@@ -112,6 +129,9 @@ function addItem(newItemVal) {
   data.setState({ count: countActiveTasks() });
 }
 
+/**
+ * Removes all completed todo items from the list.
+ */
 function removeCompleted() {
   for (let i = 0; i < list.getState().list.length; i++) {
     const element = list.getState().list[i];
@@ -123,11 +143,17 @@ function removeCompleted() {
   data.setState({ count: countActiveTasks() });
 }
 
+/**
+ * Removes a single todo item by id and refreshes the active count.
+ */
 function removeItem(itemId) {
   list.setState({ list: [...list.getState().list.filter((item) => item.id !== itemId)] });
   data.setState({ count: countActiveTasks() });
 }
 
+/**
+ * Counts how many todo items are still active.
+ */
 function countActiveTasks() {
   let result = 0;
   for (let i = 0; i < list.getState().list.length; i++) {
@@ -139,6 +165,9 @@ function countActiveTasks() {
   return result;
 }
 
+/**
+ * Toggles a todo item between active and completed states.
+ */
 function markItemAsCompleted(itemId) {
   list.setState({
     list: [
@@ -163,6 +192,9 @@ function markItemAsCompleted(itemId) {
   data.setState({ count: countActiveTasks() });
 }
 
+/**
+ * Marks every todo as completed, or reactivates all todos if none are active.
+ */
 function markAllItemsAsCompleted() {
   if (data.getState().count != 0) {
     list.setState({
@@ -190,6 +222,9 @@ function markAllItemsAsCompleted() {
   data.setState({ count: countActiveTasks() });
 }
 
+/**
+ * Updates the text content for a single todo item.
+ */
 function changeItemContent(itemId, newContent) {
   list.setState({
     list: [
@@ -206,6 +241,9 @@ function changeItemContent(itemId, newContent) {
   });
 }
 
+/**
+ * Builds the visible todo list items for the current filter.
+ */
 function listItem() {
   let result = [];
   for (let i = 0; i < list.getState().list.length; i++) {
@@ -228,6 +266,7 @@ function listItem() {
               "input",
               { class: "toggle", type: "checkbox", "data-testid": "todo-item-toggle", ...checkBoxState },
               {
+                // Toggles the completed state for this todo item.
                 click: () => {
                   markItemAsCompleted(element.id);
                 },
@@ -238,6 +277,7 @@ function listItem() {
               "label",
               { "data-testid": "todo-item-label" },
               {
+                // Opens the inline editor for this todo item.
                 dblclick: (event) => {
                   document.querySelectorAll(".hide-element").forEach((el) => {
                     el.classList.remove("hide-element");
@@ -259,6 +299,7 @@ function listItem() {
               "button",
               { "data-testid": "todo-item-button", class: "destroy" },
               {
+                // Removes this todo item from the list.
                 click: () => {
                   removeItem(element.id);
                 },
@@ -269,6 +310,7 @@ function listItem() {
               "input",
               { class: "new-todo editing-input hide-input", id: "todo-input", "data-testid": "text-input", value: element.content },
               {
+                // Saves edited todo text when Enter is pressed.
                 keydown: (event) => {
                   const value = event.target.value.trim();
                   if (event.key === "Enter" && value.length >= 2) {
@@ -290,6 +332,7 @@ function listItem() {
   return result;
 }
 
+// Closes any open inline todo editor when the document is clicked.
 document.addEventListener("click", () => {
   event.stopPropagation();
   document.querySelectorAll(".hide-element").forEach((el) => {
@@ -300,10 +343,16 @@ document.addEventListener("click", () => {
   });
 });
 
+/**
+ * Builds the not-found route view.
+ */
 function NotFound() {
   return createElement("div", {}, {}, "404");
 }
 
+/**
+ * Builds the footer action bar with counters, filters, and clear controls.
+ */
 function actionsBar() {
   let all = {
     class: "selected",
@@ -343,6 +392,7 @@ function actionsBar() {
               "a",
               { ...all, href: "#/" },
               {
+                // Switches the filter to show all todos.
                 click: () => {
                   listType.setState({ listType: "all" });
                 },
@@ -358,6 +408,7 @@ function actionsBar() {
               "a",
               { ...active, href: "#/active" },
               {
+                // Switches the filter to show active todos.
                 click: () => {
                   listType.setState({ listType: "active" });
                 },
@@ -373,6 +424,7 @@ function actionsBar() {
               "a",
               { ...completed, href: "#/completed" },
               {
+                // Switches the filter to show completed todos.
                 click: () => {
                   listType.setState({ listType: "completed" });
                 },
@@ -385,6 +437,7 @@ function actionsBar() {
           "button",
           { class: "clear-completed" },
           {
+            // Removes all completed todo items.
             click: () => {
               removeCompleted();
             },
@@ -400,9 +453,11 @@ function actionsBar() {
 
 router.route = {
   path: "/",
+  // Renders the home route into the real DOM.
   handler: () => {
     renderElement(true, ROOT, ...Home());
   },
+  // Builds the home route virtual DOM for patching.
   fakeHandler: () => {
     return createVirtualRootContainer(ROOT, ...Home());
   },
@@ -410,9 +465,11 @@ router.route = {
 
 router.route = {
   path: "/active",
+  // Renders the active filter route into the real DOM.
   handler: () => {
     renderElement(true, ROOT, ...Home());
   },
+  // Builds the active filter virtual DOM for patching.
   fakeHandler: () => {
     return createVirtualRootContainer(ROOT, ...Home());
   },
@@ -420,9 +477,11 @@ router.route = {
 
 router.route = {
   path: "/completed",
+  // Renders the completed filter route into the real DOM.
   handler: () => {
     renderElement(true, ROOT, ...Home());
   },
+  // Builds the completed filter virtual DOM for patching.
   fakeHandler: () => {
     return createVirtualRootContainer(ROOT, ...Home());
   },
@@ -430,9 +489,11 @@ router.route = {
 
 router.route = {
   path: "*",
+  // Renders the fallback route into the real DOM.
   handler: () => {
     renderElement(true, ROOT, ...Home());
   },
+  // Builds the fallback route virtual DOM for patching.
   fakeHandler: () => {
     return createVirtualRootContainer(ROOT, ...Home());
   },

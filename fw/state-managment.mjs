@@ -39,7 +39,9 @@ export function createState(initialState) {
   function subscribe(fn) {
     listeners.push(fn);
 
-    // Optional unsubscribe support
+    /**
+     * Removes the registered listener from future state updates.
+     */
     return () => {
       listeners = listeners.filter((listener) => listener !== fn);
     };

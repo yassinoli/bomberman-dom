@@ -14,7 +14,9 @@ export function RouterConstructor() {
   return {
     routes: {},
 
-    // Register a route
+    /**
+     * Registers a route and stores its real and virtual render handlers.
+     */
     set route({ path, handler, fakeHandler }) {
       this.routes[path] = {
         main: handler,
@@ -30,6 +32,9 @@ export function RouterConstructor() {
  * @param {Object} router - Router instance created by RouterConstructor.
  */
 export function routing(router) {
+  /**
+   * Renders the handler for the current hash route or the fallback route.
+   */
   function renderRoute() {
     const currentPath = location.hash.slice(1) || "/";
     const matchedRoute = router.routes[currentPath];

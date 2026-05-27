@@ -4,12 +4,6 @@ import { Level } from "./game.js";
 
 let roomId = 0
 
-// const PLAYER_SPRITES = [
-//   { spriteRow: 0, spriteCol: 0 }, // Player 1
-//   { spriteRow: 0, spriteCol: 3 }, // Player 2
-//   { spriteRow: 0, spriteCol: 6 }, // Player 3
-//   { spriteRow: 0, spriteCol: 9 }  // Player 4
-// ];
 
 const START_POSITIONS = [
   { x: 1, y: 1 }, // Top-left
@@ -18,7 +12,9 @@ const START_POSITIONS = [
   { x: 15, y: 9 }  // Bottom-right
 ];
 
-// You can adjust spriteRow/spriteCol for more variety!
+/**
+ * Broadcasts lobby and countdown state to every player in the room.
+ */
 function broadcastRoomState(room) {
   const state = {
     type: "room_state",
@@ -33,6 +29,9 @@ function broadcastRoomState(room) {
   room.players.forEach(p => p.conn.send(JSON.stringify(state)));
 }
 
+/**
+ * Assigns starting positions and player indexes before the match begins.
+ */
 function assignPlayerPositionsAndSprites(room) {
   // room.map.addRandomBreaks(START_POSITIONS)
   room.players.forEach((player, idx) => {
@@ -47,6 +46,9 @@ function assignPlayerPositionsAndSprites(room) {
   });
 }
 
+/**
+ * Starts the lobby timer that waits for more players before the ready countdown.
+ */
 function startMainTimer(room) {
   if (room.players.length < 2) {
     return
@@ -55,15 +57,11 @@ function startMainTimer(room) {
   if (room.mainTimerStarted) return;
   room.mainTimerStarted = true;
   room.mainTimeLeft = 20;
+  // Ticks the lobby timer and starts the ready timer when the lobby is full or time expires.
   room.intervalId = setInterval(() => {
     broadcastRoomState(room);
     room.mainTimeLeft--;
     if (room.players.length === 4 || room.mainTimeLeft <= 0) {
-      // if (room.players.length === 1) {
-      //   room.mainTimeLeft = 20
-      //   broadcastRoomState(room);
-      //   return
-      // }
       clearInterval(room.intervalId);
       room.intervalId = null;
       startReadyTimer(room);
@@ -71,10 +69,14 @@ function startMainTimer(room) {
   }, 1000);
 }
 
+/**
+ * Starts the ready countdown and marks the room as started when it ends.
+ */
 function startReadyTimer(room) {
   if (room.readyTimerStarted) return;
   room.readyTimerStarted = true;
   room.readyTimeLeft = 10;
+  // Ticks the ready timer and starts the game when it reaches zero.
   room.intervalId = setInterval(() => {
     room.readyTimeLeft--;
     broadcastRoomState(room);
@@ -89,6 +91,9 @@ function startReadyTimer(room) {
 }
 
 
+/**
+ * Creates a player, assigns them to a room, and starts the room timers.
+ */
 const handlePlayer = (name, ws, game) => {
   let player = {
     conn: ws,
@@ -110,7 +115,6 @@ const handlePlayer = (name, ws, game) => {
     type: "player_added",
     playerId: player.player_id
   }))
-  // console.log(roomId);
 
   if (game.rooms[roomId].players.length < 4) {
     if (!game.rooms[roomId].readyTimerStarted) {
