@@ -4,8 +4,8 @@ import { createServer } from "node:http";
 import { extname, join, normalize, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { WebSocketServer } from "ws";
-import { Level } from "./src/game.js";
-import { map as mapString } from "./src/maps.js";
+import { Level } from "./src.js";
+import { map as mapString } from "./src.js";
 
 const hostname = "localhost";
 const port = 8000;
