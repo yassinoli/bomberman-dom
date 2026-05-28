@@ -4,8 +4,7 @@ import { createServer } from "node:http";
 import { extname, join, normalize, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { WebSocketServer } from "ws";
-import { Level } from "./src.js";
-import { map as mapString } from "./src.js";
+import { Level, createRandomMap } from "./src.js";
 
 const hostname = "localhost";
 const port = 8000;
@@ -121,7 +120,7 @@ async function serveStatic(req, res) {
  * Creates a fresh game room with an initialized map and empty game state.
  */
 function createRoom(id) {
-  const level = new Level(mapString);
+  const level = new Level(createRandomMap());
   return {
     id,
     phase: "lobby",
