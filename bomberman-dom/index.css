@@ -1,0 +1,401 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow: hidden;
+  background: #080914;
+  color: #edf2ff;
+  font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.screen {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.panel {
+  width: min(460px, 100%);
+  border: 1px solid #3b82f6;
+  border-radius: 8px;
+  background: #111827;
+  box-shadow: 0 24px 80px #0008;
+  padding: 24px;
+}
+
+.panel h1,
+.panel h2 {
+  margin: 0 0 16px;
+  letter-spacing: 0.04em;
+}
+
+.panel p {
+  color: #b8c4d9;
+  line-height: 1.55;
+}
+
+.nickname-form {
+  display: grid;
+  gap: 12px;
+}
+
+.test-tools {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid #24324d;
+}
+
+.test-links {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.test-links a,
+.reset-link {
+  display: grid;
+  min-height: 38px;
+  place-items: center;
+  border: 1px solid #34435f;
+  border-radius: 6px;
+  background: #0b1020;
+  color: #dbeafe;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.reset-link {
+  border-color: #7f1d1d;
+  color: #fecaca;
+}
+
+.nickname-form input,
+.chat-row input {
+  width: 100%;
+  border: 1px solid #34435f;
+  border-radius: 6px;
+  background: #0b1020;
+  color: #f8fafc;
+  padding: 10px 12px;
+  outline: none;
+}
+
+.nickname-form input:focus,
+.chat-row input:focus {
+  border-color: #38bdf8;
+}
+
+button {
+  border: 0;
+  border-radius: 6px;
+  background: #22c55e;
+  color: #04130a;
+  cursor: pointer;
+  font-weight: 700;
+  padding: 10px 14px;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.lobby-list {
+  display: grid;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.lobby-player {
+  display: flex;
+  justify-content: space-between;
+  border: 1px solid #24324d;
+  border-radius: 6px;
+  padding: 10px 12px;
+  background: #0b1020;
+}
+
+.app {
+  width: 100vw;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(760px, 1fr) 360px;
+  gap: 14px;
+  padding: 14px;
+}
+
+.arena-shell,
+.sidebar {
+  min-height: 0;
+  border: 1px solid #27364f;
+  border-radius: 8px;
+  background: #101624;
+}
+
+.arena-shell {
+  position: relative;
+  display: grid;
+  grid-template-rows: 76px 1fr;
+  overflow: hidden;
+}
+
+.hud {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid #27364f;
+  padding: 12px 18px;
+}
+
+.hud-title {
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-align: center;
+}
+
+.hud-stat {
+  color: #cbd5e1;
+  font-size: 14px;
+}
+
+.hud-stat:last-child {
+  text-align: right;
+}
+
+.arena-wrap {
+  display: grid;
+  place-items: center;
+  overflow: auto;
+  padding: 16px;
+}
+
+.result-banner {
+  position: absolute;
+  inset: 76px 0 0;
+  display: none;
+  place-items: center;
+  background: #020617b8;
+  backdrop-filter: blur(2px);
+  z-index: 10;
+  pointer-events: none;
+}
+
+.result-banner.visible {
+  display: grid;
+}
+
+.result-box {
+  width: min(420px, calc(100% - 32px));
+  border: 1px solid #38bdf8;
+  border-radius: 8px;
+  background: #0b1020;
+  padding: 22px;
+  text-align: center;
+  box-shadow: 0 20px 60px #0009;
+}
+
+.result-title {
+  margin: 0;
+  color: #f8fafc;
+  font-size: 34px;
+  letter-spacing: 0.08em;
+}
+
+.result-text {
+  margin: 10px 0 0;
+  color: #cbd5e1;
+}
+
+.result-banner.win .result-box {
+  border-color: #22c55e;
+}
+
+.result-banner.lose .result-box {
+  border-color: #fb7185;
+}
+
+.map-game {
+  width: calc(var(--cols, 17) * 49px + (var(--cols, 17) - 1) * 1px + 4px);
+  height: calc(var(--rows, 11) * 49px + (var(--rows, 11) - 1) * 1px + 4px);
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 17), 49px);
+  grid-template-rows: repeat(var(--rows, 11), 49px);
+  gap: 1px;
+  border: 2px solid #38bdf8;
+  background: #060913;
+  contain: layout paint style;
+}
+
+.cell {
+  position: relative;
+  width: 49px;
+  height: 49px;
+  display: grid;
+  place-items: center;
+  background: #0f2744;
+  overflow: hidden;
+}
+
+.wall {
+  background: #334155;
+}
+
+.block {
+  background: #7c4a24;
+}
+
+.block::after {
+  content: "B";
+  color: #fbbf24;
+  font-weight: 900;
+}
+
+.explosion {
+  background: #f97316;
+  box-shadow: inset 0 0 18px #fef3c7;
+}
+
+.player,
+.bomb,
+.powerup {
+  position: absolute;
+  inset: 5px;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  font-weight: 900;
+  z-index: 2;
+}
+
+.player {
+  color: #020617;
+}
+
+.player.dead {
+  opacity: 0.32;
+}
+
+.bomb {
+  inset: 11px;
+  background: #111827;
+  border: 2px solid #f8fafc;
+  color: #f8fafc;
+  z-index: 3;
+}
+
+.powerup {
+  inset: 13px;
+  background: #22c55e;
+  color: #052e16;
+  z-index: 1;
+}
+
+.sidebar {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  overflow: hidden;
+}
+
+.side-section {
+  border-bottom: 1px solid #27364f;
+  padding: 14px;
+}
+
+.side-section h2 {
+  margin: 0 0 10px;
+  font-size: 15px;
+}
+
+.player-list {
+  display: grid;
+  gap: 8px;
+}
+
+.player-row {
+  display: grid;
+  grid-template-columns: 18px 1fr auto;
+  gap: 8px;
+  align-items: center;
+  color: #cbd5e1;
+  font-size: 13px;
+}
+
+.swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+}
+
+.chat-log {
+  min-height: 0;
+  overflow: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.message {
+  border-left: 3px solid #38bdf8;
+  background: #0b1020;
+  border-radius: 5px;
+  color: #dbeafe;
+  font-size: 13px;
+  line-height: 1.35;
+  padding: 7px 9px;
+}
+
+.message.death {
+  border-left-color: #fb7185;
+}
+
+.message.chat {
+  border-left-color: #22c55e;
+}
+
+.chat-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  border-top: 1px solid #27364f;
+  padding: 10px;
+}
+
+.perf {
+  color: #94a3b8;
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+@media (max-width: 1120px) {
+  body {
+    overflow: auto;
+  }
+
+  .app {
+    height: auto;
+    min-height: 100vh;
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    min-height: 420px;
+  }
+}

@@ -168,7 +168,9 @@ function openRoom() {
  */
 function joinRoom(ws, nickname) {
   if (ws.player) return;
-  const name = String(nickname || "").trim().slice(0, 16);
+  const name = String(nickname || "")
+    .trim()
+    .slice(0, 16);
   if (name.length < 2) {
     send(ws, { type: "joinRejected", reason: "Nickname must be at least 2 characters." });
     return;
@@ -242,7 +244,9 @@ function startGame(room) {
 function handleChat(ws, text) {
   const room = roomFor(ws);
   if (!room) return;
-  const cleanText = String(text || "").trim().slice(0, 120);
+  const cleanText = String(text || "")
+    .trim()
+    .slice(0, 120);
   if (!cleanText) return;
   const player = playerFor(room, ws);
   if (!player) return;
