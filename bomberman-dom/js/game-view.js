@@ -49,7 +49,7 @@ export function gameView() {
         "form",
         { class: "chat-row" },
         { submit: sendChat },
-        h("input", { id: "chat-input", maxlength: "120", placeholder: "Chat...", autocomplete: "off" }, {}, ""),
+        h("input", { id: "chat-input", maxlength: "120", placeholder: "Chat...", autocomplete: "off", value: appState.chatDraft }, { input: (e) => { appState.chatDraft = e.target.value;}}, ""),
         h("button", { type: "submit" }, {}, "Send"),
       ),
     ),

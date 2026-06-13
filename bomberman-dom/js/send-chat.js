@@ -1,4 +1,5 @@
 import { send } from "./send.js";
+import { appState } from "./state.js";
 
 export function sendChat(event) {
   event.preventDefault();
@@ -7,4 +8,5 @@ export function sendChat(event) {
   if (!text) return;
   send({ type: "chat", text });
   input.value = "";
+  appState.chatDraft = "";
 }

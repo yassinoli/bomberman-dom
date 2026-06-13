@@ -23,6 +23,7 @@ export const appState = {
   frames: 0,
   fps: 60,
   lastFpsAt: performance.now(),
+  chatDraft: "",
 };
 
 appState.nickname = appState.autoJoinNickname || sessionStorage.getItem("bomberman-nickname") || localStorage.getItem("bomberman-nickname") || "";
