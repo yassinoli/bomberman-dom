@@ -1,8 +1,8 @@
-import { updateFps } from "./update-fps.js";
-import { renderShell } from "./render-shell.js";
-import { updateGameUi } from "./update-game-ui.js";
+import { updateFps } from "../ui/update-fps.js";
+import { renderShell } from "../views/render-shell.js";
+import { updateGameUi } from "../ui/update-game-ui.js";
 import { renderBoard } from "./render-board.js";
-import { appState } from "./state.js";
+import { appState } from "../state/state.js";
 
 let frameRunning = false;
 

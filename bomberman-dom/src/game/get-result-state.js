@@ -1,4 +1,4 @@
-import { appState } from "./state.js";
+import { appState } from "../state/state.js";
 
 export function getResultState(me) {
   if (!appState.state || !me) return { visible: false, kind: "", title: "", text: "" };

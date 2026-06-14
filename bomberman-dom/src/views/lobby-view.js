@@ -1,7 +1,7 @@
-import { appState } from "./state.js";
-import { h } from "./h.js";
-import { sendChat } from "./send-chat.js";
-import { messageView } from "./message-view.js";
+import { appState } from "../state/state.js";
+import { h } from "../utils/h.js";
+import { sendChat } from "../network/send-chat.js";
+import { messageView } from "../components/message-view.js";
 
 export function lobbyView() {
   const players = appState.state?.players || [];

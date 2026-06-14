@@ -1,6 +1,6 @@
-import { appState } from "./state.js";
-import { h } from "./h.js";
-import { joinGame } from "./join-game.js";
+import { appState } from "../state/state.js";
+import { h } from "../utils/h.js";
+import { joinGame } from "../game/join-game.js";
 
 export function loginView() {
   return h(

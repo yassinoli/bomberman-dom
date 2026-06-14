@@ -1,4 +1,4 @@
-import { appState } from "./state.js";
+import { appState } from "../state/state.js";
 
 export function updateFps(now) {
   appState.frames += 1;

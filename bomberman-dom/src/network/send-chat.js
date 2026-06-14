@@ -1,5 +1,5 @@
 import { send } from "./send.js";
-import { appState } from "./state.js";
+import { appState } from "../state/state.js";
 
 export function sendChat(event) {
   event.preventDefault();

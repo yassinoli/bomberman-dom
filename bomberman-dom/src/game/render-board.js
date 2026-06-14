@@ -1,4 +1,4 @@
-import { appState, COLORS } from "./state.js";
+import { appState, COLORS } from "../state/state.js";
 import { buildBoard } from "./build-board.js";
 
 export function renderBoard() {

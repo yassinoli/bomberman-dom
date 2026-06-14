@@ -1,5 +1,5 @@
 import renderElement from "/fw/render-elemnt.mjs";
-import { appState } from "./state.js";
+import { appState } from "../state/state.js";
 import { loginView } from "./login-view.js";
 import { lobbyView } from "./lobby-view.js";
 import { gameView } from "./game-view.js";

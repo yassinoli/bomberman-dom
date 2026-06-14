@@ -1,4 +1,4 @@
-import { appState } from "./state.js";
+import { appState } from "../state/state.js";
 
 export function updateLobbyUi() {
   if (appState.view !== "lobby" || !appState.state) return;

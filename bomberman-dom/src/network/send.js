@@ -1,4 +1,4 @@
-import { appState } from "./state.js";
+import { appState } from "../state/state.js";
 
 export function send(message) {
   if (appState.ws && appState.ws.readyState === WebSocket.OPEN) {

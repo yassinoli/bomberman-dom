@@ -1,5 +1,5 @@
-import { appState, COLORS } from "./state.js";
-import { h } from "./h.js";
+import { appState, COLORS } from "../state/state.js";
+import { h } from "../utils/h.js";
 
 export function playerRow(player) {
   const status = player.alive ? `${player.lives} lives` : player.lives > 0 ? "respawning" : "out";

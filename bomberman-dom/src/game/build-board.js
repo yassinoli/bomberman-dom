@@ -1,4 +1,4 @@
-import { appState, DEFAULT_GRID_COLS, DEFAULT_GRID_ROWS } from "./state.js";
+import { appState, DEFAULT_GRID_COLS, DEFAULT_GRID_ROWS } from "../state/state.js";
 
 export function buildBoard() {
   const map = document.getElementById("map-game");

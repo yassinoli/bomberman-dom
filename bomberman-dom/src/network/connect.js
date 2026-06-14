@@ -1,8 +1,8 @@
-import { appState } from "./state.js";
-import { nowTime } from "./now-time.js";
+import { appState } from "../state/state.js";
+import { nowTime } from "../utils/now-time.js";
 import { send } from "./send.js";
-import { renderShell } from "./render-shell.js";
-import { startFrameLoop } from "./frame.js";
+import { renderShell } from "../views/render-shell.js";
+import { startFrameLoop } from "../game/frame.js";
 
 export function connect() {
   const url = (location.protocol === "https:" ? "wss://" : "ws://") + location.host;

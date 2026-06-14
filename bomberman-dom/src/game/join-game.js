@@ -1,5 +1,5 @@
-import { appState } from "./state.js";
-import { send } from "./send.js";
+import { appState } from "../state/state.js";
+import { send } from "../network/send.js";
 
 export function joinGame(event) {
   event.preventDefault();

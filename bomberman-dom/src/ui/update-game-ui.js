@@ -1,5 +1,5 @@
-import { appState, COLORS, MAX_LIVES } from "./state.js";
-import { getResultState } from "./get-result-state.js";
+import { appState, COLORS, MAX_LIVES } from "../state/state.js";
+import { getResultState } from "../game/get-result-state.js";
 
 export function updateGameUi() {
   if (appState.view !== "game" || !appState.state) return;

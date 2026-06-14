@@ -1,9 +1,9 @@
-import { appState, MAX_LIVES } from "./state.js";
-import { h } from "./h.js";
-import { sendChat } from "./send-chat.js";
-import { getResultState } from "./get-result-state.js";
-import { playerRow } from "./player-row.js";
-import { messageView } from "./message-view.js";
+import { appState, MAX_LIVES } from "../state/state.js";
+import { h } from "../utils/h.js";
+import { sendChat } from "../network/send-chat.js";
+import { getResultState } from "../game/get-result-state.js";
+import { playerRow } from "../components/player-row.js";
+import { messageView } from "../components/message-view.js";
 
 export function gameView() {
   const me = appState.state?.players?.find((player) => player.id === appState.myPlayerId);

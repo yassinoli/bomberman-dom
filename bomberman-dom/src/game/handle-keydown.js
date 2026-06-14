@@ -1,5 +1,5 @@
-import { appState, KEYS } from "./state.js";
-import { send } from "./send.js";
+import { appState, KEYS } from "../state/state.js";
+import { send } from "../network/send.js";
 
 export function handleKeydown(event) {
   if (appState.view !== "game" || appState.state?.phase !== "playing" || document.activeElement?.id === "chat-input") return;
