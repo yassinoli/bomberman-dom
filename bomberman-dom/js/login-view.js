@@ -34,7 +34,6 @@ export function loginView() {
           h("a", { href: "/?testPlayer=3", target: "_blank", rel: "noreferrer" }, {}, "P3"),
           h("a", { href: "/?testPlayer=4", target: "_blank", rel: "noreferrer" }, {}, "P4"),
         ),
-        h("a", { class: "reset-link", href: "/reset", target: "_blank", rel: "noreferrer" }, {}, "Reset local room"),
       ),
     ),
   );
