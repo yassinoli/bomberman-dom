@@ -1,6 +1,8 @@
 import { appState } from "./state.js";
 import { nowTime } from "./now-time.js";
 import { send } from "./send.js";
+import { renderShell } from "./render-shell.js";
+import { startFrameLoop } from "./frame.js";
 
 export function connect() {
   const url = (location.protocol === "https:" ? "wss://" : "ws://") + location.host;
@@ -14,6 +16,7 @@ export function connect() {
       if (appState.state.phase === "playing" || appState.state.phase === "ended") appState.view = "game";
       appState.dirtyBoard = true;
       appState.dirtyShell = previousView !== appState.view || appState.view !== "game";
+      if (appState.view === "game") startFrameLoop();
     }
     if (data.type === "joined") {
       appState.myPlayerId = data.playerId;
@@ -30,10 +33,12 @@ export function connect() {
       if (appState.chatMessages.length > 80) appState.chatMessages.shift();
       appState.dirtyShell = true;
     }
+    renderShell();
   });
   appState.ws.addEventListener("close", () => {
     appState.chatMessages.push({ sender: "Server", text: "Disconnected from server.", className: "death", time: nowTime() });
     appState.dirtyShell = true;
+    renderShell();
   });
   appState.ws.addEventListener("open", () => {
     if (appState.autoJoinNickname) {

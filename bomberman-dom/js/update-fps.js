@@ -6,6 +6,5 @@ export function updateFps(now) {
     appState.fps = appState.frames;
     appState.frames = 0;
     appState.lastFpsAt = now;
-    if (appState.view === "lobby") appState.dirtyShell = true;
   }
 }
