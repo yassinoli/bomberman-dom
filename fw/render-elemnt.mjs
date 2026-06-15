@@ -30,6 +30,10 @@ export default function renderElement(clear, parent, ...elements) {
     // Apply attributes
     if (element.attributes) {
       for (const [key, value] of Object.entries(element.attributes)) {
+        if (key === "ref" && typeof value === "function") {
+          value(domElement);
+          continue;
+        }
         if (key.startsWith("on") && typeof value === "function") {
           const eventType = key.slice(2).toLowerCase();
           setEventListener(domElement, eventType, value);

@@ -9,6 +9,7 @@ const testPlayer = Number(params.get("testPlayer"));
 
 export const appState = {
   root: document.getElementById("root"),
+  domRefs: {},
   autoJoinNickname: params.get("nickname") || (Number.isInteger(testPlayer) && testPlayer >= 1 && testPlayer <= 4 ? `Test ${testPlayer}` : ""),
   ws: null,
   myPlayerId: null,

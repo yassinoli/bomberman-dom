@@ -142,6 +142,10 @@ export function createRealNode(vNode) {
    * Apply attributes and inline events
    */
   for (const [key, value] of Object.entries(vNode.attributes || {})) {
+    if (key === "ref" && typeof value === "function") {
+      value(element);
+      continue;
+    }
     if (key.startsWith("on") && typeof value === "function") {
       setEventListener(element, key.slice(2).toLowerCase(), value);
     } else {
