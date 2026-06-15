@@ -23,6 +23,6 @@ export function getGamePlayersChildren() {
   return [
     h("h2", {}, {}, "Players"),
     h("div", { class: "player-list" }, {}, ...(appState.state?.players || []).map(playerRow)),
-    h("div", { class: "perf" }, {}, `Render: ${appState.fps}fps, DOM board uses requestAnimationFrame`),
+    // h("div", { class: "perf" }, {}, `Render: ${appState.fps}fps, DOM board uses requestAnimationFrame`),
   ];
 }
