@@ -27,7 +27,7 @@ export function connect() {
       if (appState.state.phase === "lobby" || appState.state.phase === "countdown") appState.view = "lobby";
       if (appState.state.phase === "playing" || appState.state.phase === "ended") appState.view = "game";
       appState.dirtyBoard = true;
-      appState.dirtyShell = previousView !== appState.view;
+      appState.dirtyShell = previousView !== appState.view || appState.view === "lobby";
       appState.dirtyGameUi = appState.view === "game" && nextGameUiSignature !== appState.lastGameUiSignature;
       appState.lastGameUiSignature = nextGameUiSignature;
       if (appState.view === "game") startFrameLoop();
