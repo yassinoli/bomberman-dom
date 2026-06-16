@@ -1,7 +1,7 @@
 import { appState } from "../state/state.js";
 import { getResultState } from "../game/get-result-state.js";
 import renderElement from "/fw/render-elemnt.mjs";
-import { getGameHudChildren, getGamePlayersChildren, getGameResultChildren } from "../views/game-ui.js";
+import { getGameChatChildren, getGameHudChildren, getGamePlayersChildren, getGameResultChildren } from "../views/game-ui.js";
 
 export function updateGameUi() {
   if (appState.view !== "game" || !appState.state) return;
@@ -15,4 +15,20 @@ export function updateGameUi() {
   resultBanner.className = `result-banner ${result.kind}${result.visible ? " visible" : ""}`;
   renderElement(true, resultBanner, ...getGameResultChildren(result));
   renderElement(true, gameSideSection, ...getGamePlayersChildren());
+  appState.dirtyGameUi = false;export function updateGameChat() {
+  if (appState.view !== "game") return;
+  const { gameChatLog } = appState.domRefs;
+  if (!gameChatLog) return;
+  renderElement(true, gameChatLog, ...getGameChatChildren());
+  appState.dirtyGameChat = false;
+}
+
+}
+
+export function updateGameChat() {
+  if (appState.view !== "game") return;
+  const { gameChatLog } = appState.domRefs;
+  if (!gameChatLog) return;
+  renderElement(true, gameChatLog, ...getGameChatChildren());
+  appState.dirtyGameChat = false;
 }

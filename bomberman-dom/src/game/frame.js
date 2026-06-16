@@ -18,8 +18,11 @@ export function frame(now) {
     return;
   }
   updateFps(now);
-  renderShell();
-  updateGameUi();
+  if (appState.dirtyGame) updateGameUi();
   renderBoard();
-  requestAnimationFrame(frame);
+  if (appState.dirtyBoard || appState.dirtyGameUi) {
+    requestAnimationFrame(frame);
+    return;
+  }
+  frameRunning = false;
 }

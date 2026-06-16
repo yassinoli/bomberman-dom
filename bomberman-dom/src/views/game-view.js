@@ -2,8 +2,7 @@ import { appState } from "../state/state.js";
 import { h } from "../utils/h.js";
 import { sendChat } from "../network/send-chat.js";
 import { getResultState } from "../game/get-result-state.js";
-import { messageView } from "../components/message-view.js";
-import { getGameHudChildren, getGamePlayersChildren, getGameResultChildren } from "./game-ui.js";
+import { getGameChatChildren, getGameHudChildren, getGamePlayersChildren, getGameResultChildren } from "./game-ui.js";
 
 export function gameView() {
   const me = appState.state?.players?.find((player) => player.id === appState.myPlayerId);
@@ -40,7 +39,16 @@ export function gameView() {
         {},
         ...getGamePlayersChildren(),
       ),
-      h("div", { id: "chat-log", class: "chat-log" }, {}, ...appState.chatMessages.map(messageView)),
+      h(
+        "div",
+        {
+          id: "chat-log",
+          class: "chat-log",
+          ref: (el) => { appState.domRefs.gameChatLog = el; },
+        },
+        {},
+        ...getGameChatChildren(),
+      ),
       h(
         "form",
         { class: "chat-row" },

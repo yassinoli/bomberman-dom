@@ -2,6 +2,7 @@ import { appState, MAX_LIVES } from "../state/state.js";
 import { h } from "../utils/h.js";
 import { getResultState } from "../game/get-result-state.js";
 import { playerRow } from "../components/player-row.js";
+import {messageView} from "../components/message-view.js";
 
 export function getGameHudChildren(me) {
   const result = getResultState(me);
@@ -25,4 +26,8 @@ export function getGamePlayersChildren() {
     h("div", { class: "player-list" }, {}, ...(appState.state?.players || []).map(playerRow)),
     // h("div", { class: "perf" }, {}, `Render: ${appState.fps}fps, DOM board uses requestAnimationFrame`),
   ];
+}
+
+export function getGameChatChildren() {
+  return appState.chatMessages.map(messageView);
 }

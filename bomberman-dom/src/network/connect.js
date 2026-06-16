@@ -3,7 +3,18 @@ import { nowTime } from "../utils/now-time.js";
 import { send } from "./send.js";
 import { renderShell } from "../views/render-shell.js";
 import { startFrameLoop } from "../game/frame.js";
+import { updateGameChat } from "../ui/update-game-ui.js";
 
+
+function getGameUiSignature(state) {
+  if (!state) return "";
+  return [
+    state.phase,
+    state.winnerId ?? "",
+    state.winner || "",
+    ...(state.players || []).map((player) => `${player.id}:${player.lives}:${player.alive ? 1 : 0}:${player.connected ? 1 : 0}`),
+  ].join("|");
+}
 export function connect() {
   const url = (location.protocol === "https:" ? "wss://" : "ws://") + location.host;
   appState.ws = new WebSocket(url);
