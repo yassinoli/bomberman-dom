@@ -15,14 +15,7 @@ export function updateGameUi() {
   resultBanner.className = `result-banner ${result.kind}${result.visible ? " visible" : ""}`;
   renderElement(true, resultBanner, ...getGameResultChildren(result));
   renderElement(true, gameSideSection, ...getGamePlayersChildren());
-  appState.dirtyGameUi = false;export function updateGameChat() {
-  if (appState.view !== "game") return;
-  const { gameChatLog } = appState.domRefs;
-  if (!gameChatLog) return;
-  renderElement(true, gameChatLog, ...getGameChatChildren());
-  appState.dirtyGameChat = false;
-}
-
+  appState.dirtyGameUi = false;
 }
 
 export function updateGameChat() {
