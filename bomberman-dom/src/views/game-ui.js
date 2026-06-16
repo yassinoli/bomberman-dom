@@ -10,7 +10,6 @@ export function getGameHudChildren(me) {
   return [
     h("div", { class: "hud-stat" }, {}, `Lives: ${me ? `${me.lives}/${MAX_LIVES}` : "-"}`),
     h("div", { class: "hud-title" }, {}, result.visible ? result.title : "BOMBERMAN DOM"),
-    h("div", { class: "hud-stat" }, {}, `FPS: ${appState.fps}`),
   ];
 }
 
@@ -24,7 +23,6 @@ export function getGamePlayersChildren() {
   return [
     h("h2", {}, {}, "Players"),
     h("div", { class: "player-list" }, {}, ...(appState.state?.players || []).map(playerRow)),
-    // h("div", { class: "perf" }, {}, `Render: ${appState.fps}fps, DOM board uses requestAnimationFrame`),
   ];
 }
 
