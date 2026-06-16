@@ -18,7 +18,7 @@ export function frame(now) {
     return;
   }
   updateFps(now);
-  if (appState.dirtyGame) updateGameUi();
+  if (appState.dirtyGameUi) updateGameUi();
   renderBoard();
   if (appState.dirtyBoard || appState.dirtyGameUi) {
     requestAnimationFrame(frame);

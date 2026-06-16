@@ -22,11 +22,14 @@ export function connect() {
     const data = JSON.parse(event.data);
     if (data.type === "state") {
       const previousView = appState.view;
+      const nextGameUiSignature = getGameUiSignature(data.state);
       appState.state = data.state;
       if (appState.state.phase === "lobby" || appState.state.phase === "countdown") appState.view = "lobby";
       if (appState.state.phase === "playing" || appState.state.phase === "ended") appState.view = "game";
       appState.dirtyBoard = true;
-      appState.dirtyShell = previousView !== appState.view || appState.view !== "game";
+      appState.dirtyShell = previousView !== appState.view;
+      appState.dirtyGameUi = appState.view === "game" && nextGameUiSignature !== appState.lastGameUiSignature;
+      appState.lastGameUiSignature = nextGameUiSignature;
       if (appState.view === "game") startFrameLoop();
     }
     if (data.type === "joined") {
